@@ -1,15 +1,13 @@
 package mySpring;
 
-import factory.InjectRandomInt;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
-import java.util.Random;
+
 
 public class ObjectFactory {
     private static ObjectFactory ourInstance = new ObjectFactory();
     private Config config = new JavaConfig();
-    private Random random = new Random();
 
     public static ObjectFactory getInstance() {
         return ourInstance;
@@ -25,25 +23,21 @@ public class ObjectFactory {
         }
         T o = type.newInstance();
 
-
+        FieldProcessing process = new JavaFieldProcessing();
         Field[] fields = type.getDeclaredFields();
         for (Field field : fields) {
-
-            InjectRandomInt annotation = field.getAnnotation(InjectRandomInt.class);
-            if (annotation != null) {
-                int min = annotation.min();
-                int max = annotation.max();
-                int randomIntValue = random.nextInt(max - min) + min;
-                field.setAccessible(true);
-                field.set(o,randomIntValue);
-
+            process.proceesField(o,field);
             }
-        }
-
-
-
-
 
         return o;
     }
+
 }
+
+
+
+
+
+
+
+
